@@ -215,6 +215,7 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
         show={showCompletion}
         onStartNewSession={handleStartNewSession}
         isUploading={uploadRecordingMutation.isPending}
+        sessionId={sessionId}
       />
 
       <ErrorModal

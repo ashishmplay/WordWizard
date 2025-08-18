@@ -101,6 +101,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Download recording file
+  app.get("/api/recordings/:sessionId/download", async (req, res) => {
+    try {
+      const recording = await storage.getRecording(req.params.sessionId);
+      if (!recording) {
+        return res.status(404).json({ message: "Recording not found" });
+      }
+
+      if (!fs.existsSync(recording.filepath)) {
+        return res.status(404).json({ message: "Recording file not found" });
+      }
+
+      res.setHeader('Content-Type', 'audio/wav');
+      res.setHeader('Content-Disposition', `attachment; filename="${recording.filename}"`);
+      
+      const fileStream = fs.createReadStream(recording.filepath);
+      fileStream.pipe(res);
+    } catch (error) {
+      res.status(500).json({ message: "Error downloading recording", error });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
