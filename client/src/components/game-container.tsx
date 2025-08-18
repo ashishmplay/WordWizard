@@ -150,6 +150,10 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
     window.location.reload(); // Simple way to restart with new session
   };
 
+  const handleCloseCompletion = () => {
+    setShowCompletion(false);
+  };
+
   const handleRetryMicrophone = () => {
     setShowError(false);
     startRecording();
@@ -214,6 +218,7 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
       <CompletionModal
         show={showCompletion}
         onStartNewSession={handleStartNewSession}
+        onClose={handleCloseCompletion}
         isUploading={uploadRecordingMutation.isPending}
         sessionId={sessionId}
       />

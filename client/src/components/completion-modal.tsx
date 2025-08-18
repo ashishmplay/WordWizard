@@ -1,10 +1,11 @@
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trophy, Mic, MicOff, Download } from "lucide-react";
 
 interface CompletionModalProps {
   show: boolean;
   onStartNewSession: () => void;
+  onClose?: () => void;
   isUploading: boolean;
   sessionId: string;
 }
@@ -12,6 +13,7 @@ interface CompletionModalProps {
 export default function CompletionModal({ 
   show, 
   onStartNewSession, 
+  onClose,
   isUploading,
   sessionId 
 }: CompletionModalProps) {
@@ -26,10 +28,19 @@ export default function CompletionModal({
     document.body.removeChild(link);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open && onClose) {
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={show}>
+    <Dialog open={show} onOpenChange={handleOpenChange}>
       <DialogContent className="bg-white rounded-3xl p-8 sm:p-12 max-w-lg mx-4 text-center border-none">
         <DialogTitle className="sr-only">Session Complete</DialogTitle>
+        <DialogDescription className="sr-only">
+          Congratulations on completing the speech learning session. You can download your recording or start a new session.
+        </DialogDescription>
         <div className="mb-6">
           <Trophy className="w-16 h-16 text-child-orange mb-4 mx-auto" />
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">Great Job!</h2>
