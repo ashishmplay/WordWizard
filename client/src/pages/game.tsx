@@ -41,6 +41,10 @@ export default function GamePage() {
     setGameStarted(true);
   };
 
+  const handleReturnHome = () => {
+    setGameStarted(false);
+  };
+
   if (!sessionId) {
     return (
       <div className="min-h-screen bg-child-cream flex items-center justify-center">
@@ -53,5 +57,5 @@ export default function GamePage() {
     return <StartScreen onStartGame={handleStartGame} totalImages={GAME_IMAGES.length} />;
   }
 
-  return <GameContainer sessionId={sessionId} images={GAME_IMAGES} shouldStartRecording={true} />;
+  return <GameContainer sessionId={sessionId} images={GAME_IMAGES} shouldStartRecording={true} onReturnHome={handleReturnHome} />;
 }

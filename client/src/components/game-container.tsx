@@ -17,9 +17,10 @@ interface GameContainerProps {
   sessionId: string;
   images: GameImage[];
   shouldStartRecording?: boolean;
+  onReturnHome?: () => void;
 }
 
-export default function GameContainer({ sessionId, images, shouldStartRecording = true }: GameContainerProps) {
+export default function GameContainer({ sessionId, images, shouldStartRecording = true, onReturnHome }: GameContainerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -152,6 +153,9 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
 
   const handleCloseCompletion = () => {
     setShowCompletion(false);
+    if (onReturnHome) {
+      onReturnHome();
+    }
   };
 
   const handleRetryMicrophone = () => {
