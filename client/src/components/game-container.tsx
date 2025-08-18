@@ -16,9 +16,10 @@ interface GameImage {
 interface GameContainerProps {
   sessionId: string;
   images: GameImage[];
+  shouldStartRecording?: boolean;
 }
 
-export default function GameContainer({ sessionId, images }: GameContainerProps) {
+export default function GameContainer({ sessionId, images, shouldStartRecording = true }: GameContainerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -102,8 +103,10 @@ export default function GameContainer({ sessionId, images }: GameContainerProps)
   // Initialize session and recording
   useEffect(() => {
     createSessionMutation.mutate();
-    startRecording();
-  }, []);
+    if (shouldStartRecording) {
+      startRecording();
+    }
+  }, [shouldStartRecording]);
 
   // Handle recording error
   useEffect(() => {
