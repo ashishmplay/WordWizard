@@ -1,39 +1,34 @@
-name: Deploy to Azure Web App
+name: Build and Deploy to Azure WebApp
 
 on:
   push:
     branches:
-      - main   # or master, depending on your default branch
+      - main   # or master, depending on your repo
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repo
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Login to Azure
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # Step 3: Set up Node.js (since your game uses Node.js for uploads)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'   # pick your Node version
+          node-version: '18'   # or the version your app needs
 
-      # Step 4: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 5: Deploy to Azure Web App
+      - name: Build app
+        run: npm run build --if-present
+
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "word-game-mplay"   # your app name
-          slot-name: "production"       # default slot
-          package: '.'                  # deploy current repo
+          app-name: 'word-game-mplay'   # your Azure WebApp name
+          slot-name: 'production'       # force deploy to production
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
