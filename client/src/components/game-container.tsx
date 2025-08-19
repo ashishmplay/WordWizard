@@ -6,6 +6,7 @@ import ParentControls from "./parent-controls";
 import CompletionModal from "./completion-modal";
 import ErrorModal from "./error-modal";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
+import { useSwipe } from "@/hooks/use-swipe";
 import { useToast } from "@/hooks/use-toast";
 
 interface GameImage {
@@ -34,6 +35,21 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
     stopRecording,
     audioBlob
   } = useAudioRecorder();
+
+  // Swipe functionality for mobile
+  const swipeRef = useSwipe({
+    onSwipeLeft: () => {
+      if (currentIndex < images.length - 1) {
+        handleNext();
+      }
+    },
+    onSwipeRight: () => {
+      if (currentIndex > 0) {
+        handlePrevious();
+      }
+    },
+    threshold: 75
+  });
 
   // Create session mutation
   const createSessionMutation = useMutation({
@@ -205,6 +221,7 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
       <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
         <div className="max-w-4xl w-full">
           <ImageDisplayCard
+            ref={swipeRef}
             image={currentImage}
             imageNumber={currentIndex + 1}
           />

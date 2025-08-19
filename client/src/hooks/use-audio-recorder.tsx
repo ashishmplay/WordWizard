@@ -18,7 +18,9 @@ export function useAudioRecorder() {
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
+          autoGainControl: true,
+          sampleRate: 44100,
+          channelCount: 1 // Mono recording to reduce interference
         }
       });
       
