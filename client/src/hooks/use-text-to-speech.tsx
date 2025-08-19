@@ -1,6 +1,12 @@
 import { useCallback, useRef } from "react";
 
-export function useTextToSpeech() {
+interface TextToSpeechOptions {
+  onSpeechStart?: () => void;
+  onSpeechEnd?: () => void;
+}
+
+export function useTextToSpeech(options: TextToSpeechOptions = {}) {
+  const { onSpeechStart, onSpeechEnd } = options;
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const speak = useCallback((text: string) => {
@@ -21,7 +27,20 @@ export function useTextToSpeech() {
     // Configure speech settings
     utterance.rate = 0.8; // Slightly slower for children
     utterance.pitch = 1.1; // Slightly higher pitch for children
-    utterance.volume = 0.3; // Very low volume to minimize recording interference
+    utterance.volume = 0.5; // Moderate volume
+    
+    // Add event listeners
+    utterance.onstart = () => {
+      if (onSpeechStart) onSpeechStart();
+    };
+    
+    utterance.onend = () => {
+      if (onSpeechEnd) onSpeechEnd();
+    };
+    
+    utterance.onerror = () => {
+      if (onSpeechEnd) onSpeechEnd();
+    };
     
     // Try to use a child-friendly voice
     const voices = speechSynthesis.getVoices();
@@ -36,12 +55,13 @@ export function useTextToSpeech() {
 
     utteranceRef.current = utterance;
     speechSynthesis.speak(utterance);
-  }, []);
+  }, [onSpeechStart, onSpeechEnd]);
 
   const stop = useCallback(() => {
     speechSynthesis.cancel();
     utteranceRef.current = null;
-  }, []);
+    if (onSpeechEnd) onSpeechEnd();
+  }, [onSpeechEnd]);
 
   return { speak, stop };
 }

@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 
 export function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [recordingError, setRecordingError] = useState<string | null>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   
@@ -61,17 +62,35 @@ export function useAudioRecorder() {
     }
   }, []);
 
-  const stopRecording = useCallback(() => {
+  const pauseRecording = useCallback(() => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.pause();
+      setIsPaused(true);
+    }
+  }, []);
+
+  const resumeRecording = useCallback(() => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
+      mediaRecorderRef.current.resume();
+      setIsPaused(false);
+    }
+  }, []);
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && (mediaRecorderRef.current.state === 'recording' || mediaRecorderRef.current.state === 'paused')) {
       mediaRecorderRef.current.stop();
+      setIsPaused(false);
     }
   }, []);
 
   return {
     isRecording,
+    isPaused,
     recordingError,
     audioBlob,
     startRecording,
-    stopRecording
+    stopRecording,
+    pauseRecording,
+    resumeRecording
   };
 }

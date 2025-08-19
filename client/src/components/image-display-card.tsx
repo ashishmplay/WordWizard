@@ -13,11 +13,16 @@ interface ImageDisplayCardProps {
   imageNumber: number;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
+  onSpeechStart?: () => void;
+  onSpeechEnd?: () => void;
 }
 
 const ImageDisplayCard = forwardRef<HTMLDivElement, ImageDisplayCardProps>(
-  ({ image, imageNumber, onSwipeLeft, onSwipeRight }, ref) => {
-    const { speak } = useTextToSpeech();
+  ({ image, imageNumber, onSwipeLeft, onSwipeRight, onSpeechStart, onSpeechEnd }, ref) => {
+    const { speak } = useTextToSpeech({
+      onSpeechStart,
+      onSpeechEnd
+    });
 
     // Auto-play word pronunciation when image changes
     useEffect(() => {
