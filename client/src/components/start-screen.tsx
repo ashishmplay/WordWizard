@@ -1,30 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Mic, Play, Eye } from "lucide-react";
-import appleImage from "@assets/apple_1755515297303.png";
-import babyImage from "@assets/baby_1755515297304.png";
-import bananaImage from "@assets/banana_1755515297304.png";
-import bathtubImage from "@assets/bathtub_1755515297305.png";
-import bedImage from "@assets/bed_1755515297305.png";
-import bookImage from "@assets/book_1755515297305.png";
-import canImage from "@assets/can_1755515297306.png";
-import combImage from "@assets/comb_1755515297306.png";
-import cupImage from "@assets/cup_1755515297306.png";
-import dogImage from "@assets/dog_1755515297306.png";
-import flowerImage from "@assets/flower_1755515297307.png";
-
-const PREVIEW_IMAGES = [
-  { src: appleImage, word: "apple" },
-  { src: babyImage, word: "baby" },
-  { src: bananaImage, word: "banana" },
-  { src: bathtubImage, word: "bathtub" },
-  { src: bedImage, word: "bed" },
-  { src: bookImage, word: "book" },
-  { src: canImage, word: "can" },
-  { src: combImage, word: "comb" },
-  { src: cupImage, word: "cup" },
-  { src: dogImage, word: "dog" },
-  { src: flowerImage, word: "flower" },
-];
 
 interface StartScreenProps {
   onStartGame: () => void;
@@ -43,23 +18,6 @@ export default function StartScreen({ onStartGame, totalImages }: StartScreenPro
           <p className="text-xl sm:text-2xl text-gray-600">
             Let's practice saying words together!
           </p>
-        </div>
-
-        {/* Image Preview */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Today's Words</h2>
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 sm:gap-3 mb-6 max-w-2xl mx-auto">
-            {PREVIEW_IMAGES.map((image, index) => (
-              <div key={index} className="bg-white rounded-xl p-2 shadow-lg border-2 border-gray-200">
-                <img
-                  src={image.src}
-                  alt={image.word}
-                  className="w-full h-12 sm:h-16 object-contain rounded-lg"
-                />
-                <p className="text-xs font-bold text-gray-700 text-center mt-1 truncate">{image.word}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Instructions */}
