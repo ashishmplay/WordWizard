@@ -237,8 +237,8 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
             ref={swipeRef}
             image={currentImage}
             imageNumber={currentIndex + 1}
-            onSwipeLeft={goToNext}
-            onSwipeRight={goToPrevious}
+            onSwipeLeft={handleNext}
+            onSwipeRight={handlePrevious}
             onSpeechStart={pauseRecording}
             onSpeechEnd={resumeRecording}
           />
