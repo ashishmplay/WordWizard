@@ -84,6 +84,7 @@ const GAME_IMAGES = [
 export default function GamePage() {
   const [sessionId, setSessionId] = useState<string>("");
   const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [startIndex, setStartIndex] = useState<number>(0);
 
   useEffect(() => {
     // Generate unique session ID
@@ -91,8 +92,9 @@ export default function GamePage() {
     setSessionId(newSessionId);
   }, []);
 
-  const handleStartGame = () => {
+  const handleStartGame = (startIndex = 0) => {
     setGameStarted(true);
+    setStartIndex(startIndex);
   };
 
   const handleReturnHome = () => {
@@ -108,8 +110,18 @@ export default function GamePage() {
   }
 
   if (!gameStarted) {
-    return <StartScreen onStartGame={handleStartGame} totalImages={GAME_IMAGES.length} />;
+    return <StartScreen 
+      onStartGame={handleStartGame} 
+      totalImages={GAME_IMAGES.length} 
+      imageWords={GAME_IMAGES.map(img => img.word)}
+    />;
   }
 
-  return <GameContainer sessionId={sessionId} images={GAME_IMAGES} shouldStartRecording={true} onReturnHome={handleReturnHome} />;
+  return <GameContainer 
+    sessionId={sessionId} 
+    images={GAME_IMAGES} 
+    shouldStartRecording={true} 
+    startIndex={startIndex}
+    onReturnHome={handleReturnHome} 
+  />;
 }

@@ -4,6 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import ImageDisplayCard from "./image-display-card";
 import ParentControls from "./parent-controls";
 import CompletionModal from "./completion-modal";
+import PartialSaveModal from "./partial-save-modal";
 import ErrorModal from "./error-modal";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useSwipe } from "@/hooks/use-swipe";
@@ -18,12 +19,14 @@ interface GameContainerProps {
   sessionId: string;
   images: GameImage[];
   shouldStartRecording?: boolean;
+  startIndex?: number;
   onReturnHome?: () => void;
 }
 
-export default function GameContainer({ sessionId, images, shouldStartRecording = true, onReturnHome }: GameContainerProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+export default function GameContainer({ sessionId, images, shouldStartRecording = true, startIndex = 0, onReturnHome }: GameContainerProps) {
+  const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [showPartialSave, setShowPartialSave] = useState(false);
   const [showError, setShowError] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -60,7 +63,7 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
       const response = await apiRequest("POST", "/api/sessions", {
         sessionId,
         totalImages: images.length,
-        currentIndex: 0,
+        currentIndex: startIndex,
         isCompleted: false
       });
       return response.json();
@@ -135,12 +138,12 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
     }
   }, [recordingError]);
 
-  // Handle session completion
+  // Handle session completion or partial save
   useEffect(() => {
-    if (audioBlob && showCompletion) {
+    if (audioBlob && (showCompletion || showPartialSave)) {
       uploadRecordingMutation.mutate(audioBlob);
     }
-  }, [audioBlob, showCompletion]);
+  }, [audioBlob, showCompletion, showPartialSave]);
 
   const handleNext = () => {
     if (currentIndex < images.length - 1) {
@@ -205,13 +208,15 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
   const handleStopAndSave = () => {
     if (isRecording || isPaused) {
       stopRecording();
-      updateSessionMutation.mutate({ index: currentIndex, completed: true });
-      setShowCompletion(true);
-      toast({
-        title: "Session Stopped",
-        description: "Recording has been stopped and saved",
-        variant: "default"
-      });
+      updateSessionMutation.mutate({ index: currentIndex, completed: false });
+      setShowPartialSave(true);
+    }
+  };
+
+  const handlePartialSaveClose = () => {
+    setShowPartialSave(false);
+    if (onReturnHome) {
+      onReturnHome();
     }
   };
 
@@ -285,6 +290,15 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
         onClose={handleCloseCompletion}
         isUploading={uploadRecordingMutation.isPending}
         sessionId={sessionId}
+      />
+
+      <PartialSaveModal
+        show={showPartialSave}
+        onGoHome={handlePartialSaveClose}
+        isUploading={uploadRecordingMutation.isPending}
+        sessionId={sessionId}
+        wordsCompleted={currentIndex + 1}
+        totalWords={images.length}
       />
 
       <ErrorModal

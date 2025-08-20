@@ -1,12 +1,25 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mic, Play, Eye } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Mic, Play, Eye, RotateCcw } from "lucide-react";
 
 interface StartScreenProps {
-  onStartGame: () => void;
+  onStartGame: (startIndex?: number) => void;
   totalImages: number;
+  imageWords: string[];
 }
 
-export default function StartScreen({ onStartGame, totalImages }: StartScreenProps) {
+export default function StartScreen({ onStartGame, totalImages, imageWords = [] }: StartScreenProps) {
+  const [startFromWord, setStartFromWord] = useState<string>("");
+
+  const handleStartGame = () => {
+    if (startFromWord) {
+      const startIndex = parseInt(startFromWord);
+      onStartGame(startIndex);
+    } else {
+      onStartGame();
+    }
+  };
   return (
     <div className="min-h-screen bg-child-cream font-child flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12 max-w-2xl w-full text-center">
@@ -61,14 +74,42 @@ export default function StartScreen({ onStartGame, totalImages }: StartScreenPro
           </div>
         </div>
 
+        {/* Word Selection */}
+        <div className="mb-8 bg-child-orange bg-opacity-10 rounded-2xl p-6 border-2 border-child-orange border-opacity-20">
+          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center justify-center">
+            <RotateCcw className="w-5 h-5 mr-2 text-child-orange" />
+            Continue from where you left off?
+          </h3>
+          <div className="space-y-4">
+            <Select value={startFromWord} onValueChange={setStartFromWord}>
+              <SelectTrigger className="w-full max-w-md mx-auto bg-white border-2 border-gray-300 rounded-xl text-lg p-4 h-auto">
+                <SelectValue placeholder="Start from the beginning" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border-2 border-gray-300 rounded-xl max-h-64">
+                {imageWords.map((word, index) => (
+                  <SelectItem key={index} value={index.toString()} className="text-lg p-3 hover:bg-child-cream">
+                    {index + 1}. {word}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-gray-600">
+              {startFromWord && imageWords.length > 0
+                ? `You'll start from "${imageWords[parseInt(startFromWord)]}" (word ${parseInt(startFromWord) + 1} of ${totalImages})`
+                : "Select a word to start from, or begin from the first word"
+              }
+            </p>
+          </div>
+        </div>
+
         {/* Start Button */}
         <Button
-          onClick={onStartGame}
+          onClick={handleStartGame}
           size="lg"
           className="bg-child-blue hover:bg-blue-600 text-white px-12 py-6 rounded-3xl text-2xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
         >
           <Play className="w-6 h-6 mr-3" />
-          Start Game
+          {startFromWord && imageWords.length > 0 ? `Start from "${imageWords[parseInt(startFromWord)]}"` : "Start Game"}
         </Button>
 
         {/* Permission Note */}
