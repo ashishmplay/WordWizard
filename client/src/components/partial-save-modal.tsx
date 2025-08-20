@@ -30,8 +30,14 @@ export default function PartialSaveModal({
     document.body.removeChild(link);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      onGoHome();
+    }
+  };
+
   return (
-    <Dialog open={show}>
+    <Dialog open={show} onOpenChange={handleOpenChange}>
       <DialogContent className="bg-white rounded-3xl p-8 sm:p-12 max-w-lg mx-4 text-center border-none">
         <DialogTitle className="sr-only">Session Saved</DialogTitle>
         <DialogDescription className="sr-only">

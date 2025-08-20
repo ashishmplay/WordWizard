@@ -185,25 +185,6 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
     startRecording();
   };
 
-  const handlePauseAndSave = () => {
-    if (isRecording && !isPaused) {
-      // Temporarily stop to save current recording, then we can restart later
-      stopRecording();
-      toast({
-        title: "Session Paused",
-        description: "Recording has been saved up to this point. Click a navigation button to continue.",
-        variant: "default"
-      });
-    } else if (isPaused || !isRecording) {
-      // Resume recording
-      startRecording();
-      toast({
-        title: "Recording Resumed",
-        description: "Recording has been resumed",
-        variant: "default"
-      });
-    }
-  };
 
   const handleStopAndSave = () => {
     if (isRecording || isPaused) {
@@ -276,7 +257,6 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
             totalImages={images.length}
             onNext={handleNext}
             onPrevious={handlePrevious}
-            onPauseAndSave={handlePauseAndSave}
             onStopAndSave={handleStopAndSave}
             isLoading={updateSessionMutation.isPending}
             isSaving={uploadRecordingMutation.isPending}

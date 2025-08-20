@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Check, Pause, Square } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Square } from "lucide-react";
 
 interface ParentControlsProps {
   currentIndex: number;
   totalImages: number;
   onNext: () => void;
   onPrevious: () => void;
-  onPauseAndSave?: () => void;
   onStopAndSave?: () => void;
   isLoading: boolean;
   isSaving?: boolean;
@@ -17,7 +16,6 @@ export default function ParentControls({
   totalImages, 
   onNext, 
   onPrevious, 
-  onPauseAndSave,
   onStopAndSave,
   isLoading,
   isSaving 
@@ -66,20 +64,8 @@ export default function ParentControls({
         </Button>
       </div>
 
-      {/* Pause and Stop Controls */}
-      <div className="flex justify-center space-x-3">
-        {onPauseAndSave && (
-          <Button
-            onClick={onPauseAndSave}
-            disabled={isLoading || isSaving}
-            size="sm"
-            className="bg-child-orange hover:bg-orange-600 text-white px-6 py-2 rounded-xl text-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-          >
-            <Pause className="w-4 h-4 mr-2" />
-            {isSaving ? 'Saving...' : 'Save & Pause'}
-          </Button>
-        )}
-        
+      {/* Stop Control */}
+      <div className="flex justify-center">
         {onStopAndSave && (
           <Button
             onClick={onStopAndSave}
