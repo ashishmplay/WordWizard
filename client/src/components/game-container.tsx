@@ -30,9 +30,12 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
 
   const {
     isRecording,
+    isPaused,
     recordingError,
     startRecording,
     stopRecording,
+    pauseRecording,
+    resumeRecording,
     audioBlob
   } = useAudioRecorder();
 
@@ -179,6 +182,39 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
     startRecording();
   };
 
+  const handlePauseAndSave = () => {
+    if (isRecording && !isPaused) {
+      // Temporarily stop to save current recording, then we can restart later
+      stopRecording();
+      toast({
+        title: "Session Paused",
+        description: "Recording has been saved up to this point. Click a navigation button to continue.",
+        variant: "default"
+      });
+    } else if (isPaused || !isRecording) {
+      // Resume recording
+      startRecording();
+      toast({
+        title: "Recording Resumed",
+        description: "Recording has been resumed",
+        variant: "default"
+      });
+    }
+  };
+
+  const handleStopAndSave = () => {
+    if (isRecording || isPaused) {
+      stopRecording();
+      updateSessionMutation.mutate({ index: currentIndex, completed: true });
+      setShowCompletion(true);
+      toast({
+        title: "Session Stopped",
+        description: "Recording has been stopped and saved",
+        variant: "default"
+      });
+    }
+  };
+
   const currentImage = images[currentIndex];
   const progress = ((currentIndex + 1) / images.length) * 100;
 
@@ -203,15 +239,17 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
           
           {/* Recording Status */}
           <div className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
-            isRecording 
+            isRecording && !isPaused
               ? 'bg-child-purple text-white' 
+              : isPaused
+              ? 'bg-child-orange text-white'
               : 'bg-gray-500 text-white'
           }`}>
             <div className={`w-3 h-3 rounded-full ${
-              isRecording ? 'bg-red-500 animate-pulse' : 'bg-gray-400'
+              isRecording && !isPaused ? 'bg-red-500 animate-pulse' : isPaused ? 'bg-orange-400' : 'bg-gray-400'
             }`} />
             <span className="text-lg font-semibold">
-              {isRecording ? 'Recording' : 'Recording Stopped'}
+              {isRecording && !isPaused ? 'Recording' : isPaused ? 'Paused' : 'Recording Stopped'}
             </span>
           </div>
         </div>
@@ -233,7 +271,10 @@ export default function GameContainer({ sessionId, images, shouldStartRecording 
             totalImages={images.length}
             onNext={handleNext}
             onPrevious={handlePrevious}
+            onPauseAndSave={handlePauseAndSave}
+            onStopAndSave={handleStopAndSave}
             isLoading={updateSessionMutation.isPending}
+            isSaving={uploadRecordingMutation.isPending}
           />
         </div>
       </main>
