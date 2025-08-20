@@ -26,6 +26,27 @@ const upload = multer({
   }
 });
 
+const partialUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const partialDir = path.join(process.cwd(), 'uploads', 'partial');
+      if (!fs.existsSync(partialDir)) {
+        fs.mkdirSync(partialDir, { recursive: true });
+      }
+      cb(null, partialDir);
+    },
+    filename: (req, file, cb) => {
+      const sessionId = req.body.sessionId || 'unknown';
+      const currentIndex = req.body.currentIndex || '0';
+      const filename = `partial_recording_${sessionId}_index_${currentIndex}_${Date.now()}.wav`;
+      cb(null, filename);
+    }
+  }),
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB limit
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new session
   app.post("/api/sessions", async (req, res) => {
@@ -85,6 +106,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(recording);
     } catch (error) {
       res.status(400).json({ message: "Error saving recording", error });
+    }
+  });
+
+  // Upload partial recording (when game is paused/stopped)
+  app.post("/api/recordings/partial", partialUpload.single('audio'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No audio file provided" });
+      }
+
+      const partialData = {
+        sessionId: req.body.sessionId,
+        filename: req.file.filename,
+        filepath: req.file.path,
+        duration: parseInt(req.body.duration) || null,
+        currentIndex: parseInt(req.body.currentIndex) || 0,
+        isPartial: true
+      };
+
+      // Create a simplified recording entry for partial saves
+      const recording = await storage.createRecording({
+        sessionId: partialData.sessionId,
+        filename: partialData.filename,
+        filepath: partialData.filepath,
+        duration: partialData.duration
+      });
+      
+      res.json({ 
+        ...recording, 
+        currentIndex: partialData.currentIndex, 
+        isPartial: true,
+        message: "Partial recording saved successfully"
+      });
+    } catch (error) {
+      res.status(400).json({ message: "Error saving partial recording", error });
     }
   });
 

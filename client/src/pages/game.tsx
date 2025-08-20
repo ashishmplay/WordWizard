@@ -32,6 +32,13 @@ import thankYouImage from "@assets/thank_you_1755718303279.jpg";
 import wagonImage from "@assets/wagon_1755718303280.jpg";
 import witchImage from "@assets/witch_1755718303280.png";
 import yesImage from "@assets/yes_1755718303280.jpg";
+import baaImage from "@assets/baa_1755720303013.png";
+import bowWowImage from "@assets/bhow%20bhow_1755720303014.png";
+import giveImage from "@assets/give_1755720303014.png";
+import mooImage from "@assets/moo_1755720303014.png";
+import openImage from "@assets/open_1755720303014.png";
+import popImage from "@assets/pop_1755720303015.png";
+import upImage from "@assets/Up_1755720303015.png";
 
 const GAME_IMAGES = [
   { src: appleImage, word: "apple" },
@@ -65,6 +72,13 @@ const GAME_IMAGES = [
   { src: wagonImage, word: "wagon" },
   { src: witchImage, word: "witch" },
   { src: yesImage, word: "yes" },
+  { src: baaImage, word: "baa" },
+  { src: bowWowImage, word: "bow wow" },
+  { src: giveImage, word: "give" },
+  { src: mooImage, word: "moo" },
+  { src: openImage, word: "open" },
+  { src: popImage, word: "pop" },
+  { src: upImage, word: "up" },
 ];
 
 export default function GamePage() {

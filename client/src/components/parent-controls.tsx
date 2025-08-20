@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Pause, Square } from "lucide-react";
 
 interface ParentControlsProps {
   currentIndex: number;
   totalImages: number;
   onNext: () => void;
   onPrevious: () => void;
+  onPauseAndSave: () => void;
+  onStopAndSave: () => void;
   isLoading: boolean;
+  isSaving?: boolean;
 }
 
 export default function ParentControls({ 
