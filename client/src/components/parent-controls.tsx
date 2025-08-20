@@ -6,8 +6,8 @@ interface ParentControlsProps {
   totalImages: number;
   onNext: () => void;
   onPrevious: () => void;
-  onPauseAndSave: () => void;
-  onStopAndSave: () => void;
+  onPauseAndSave?: () => void;
+  onStopAndSave?: () => void;
   isLoading: boolean;
   isSaving?: boolean;
 }

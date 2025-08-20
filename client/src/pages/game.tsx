@@ -33,7 +33,7 @@ import wagonImage from "@assets/wagon_1755718303280.jpg";
 import witchImage from "@assets/witch_1755718303280.png";
 import yesImage from "@assets/yes_1755718303280.jpg";
 import baaImage from "@assets/baa_1755720303013.png";
-import bowWowImage from "@assets/bhow%20bhow_1755720303014.png";
+import bowWowImage from "@assets/bhow bhow_1755720303014.png";
 import giveImage from "@assets/give_1755720303014.png";
 import mooImage from "@assets/moo_1755720303014.png";
 import openImage from "@assets/open_1755720303014.png";
